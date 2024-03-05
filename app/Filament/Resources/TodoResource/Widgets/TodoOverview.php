@@ -17,6 +17,7 @@ class TodoOverview extends BaseWidget
             && \App\Models\Todo::overToday()->ejercicio()->sum('points') >= 1
             && \App\Models\Todo::overToday()->aprendizaje()->sum('points') >= 3;
 
+
         if ($sum) {
             $estado = "Objetivos Alcanzados!";
         }
