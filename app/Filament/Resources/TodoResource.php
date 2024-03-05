@@ -56,7 +56,7 @@ class TodoResource extends Resource
                         Forms\Components\TextInput::make('description'),
                         Forms\Components\TextInput::make('doing_at'),
                         Forms\Components\TextInput::make('done_at'),
-                        Forms\Components\TextInput::make('Highlighted_at'),
+                        Forms\Components\TextInput::make('highlighted_at'),
                     ])
                 ])
             ]);
