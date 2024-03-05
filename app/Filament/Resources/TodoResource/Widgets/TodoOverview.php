@@ -9,21 +9,38 @@ class TodoOverview extends BaseWidget
 {
     protected function getStats(): array
     {
-        $estado = "Objetivos pendientes";
-        $sum = \App\Models\Todo::overToday()
-            ->allaria()
-            ->sum('points') >= 4
-            && \App\Models\Todo::overToday()->emprendimiento()->sum('points') >= 1
-            && \App\Models\Todo::overToday()->ejercicio()->sum('points') >= 1
-            && \App\Models\Todo::overToday()->aprendizaje()->sum('points') >= 3;
+
+        $estados = [
+            '|---------|',
+            '|x--------|',
+            '|xx-------|',
+            '|xxx------|',
+            '|nice-----|',
+            '|xxxxx----|',
+            '|xxxxxx---|',
+            '|finders--|',
+            '|xxxxxxxx-|',
+            '|xxxxxxxxx|',
+            "Killin' it!",
+            "Killin' it!",
+            "Wow",
+            "Wow",
+            "Epico!",
+            "Epico!",
+            "Legen-dary",
+            "Legen-dary",
+        ];
+
+        $sum = \App\Models\Todo::overToday()->allaria()->sum('points')
+            + \App\Models\Todo::overToday()->emprendimiento()->sum('points')
+            + \App\Models\Todo::overToday()->ejercicio()->sum('points')
+            + \App\Models\Todo::overToday()->aprendizaje()->sum('points');
 
 
-        if ($sum) {
-            $estado = "Objetivos Alcanzados!";
-        }
+        $estado = $estados[$sum];
 
         return [
-            Stat::make('Dia', $estado)->color('success'),
+            Stat::make('Dia', $estado),
             Stat::make('Allaria (objetivo: 4)', \App\Models\Todo::overToday()->allaria()->sum('points')),
             Stat::make('Emprendimiento (objetivo: 1)', \App\Models\Todo::overToday()->emprendimiento()->sum('points')),
             Stat::make('Ejercicio (objetivo: 1)', \App\Models\Todo::overToday()->ejercicio()->sum('points')),
