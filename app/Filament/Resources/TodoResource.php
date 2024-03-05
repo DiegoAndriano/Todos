@@ -54,8 +54,9 @@ class TodoResource extends Resource
                         Forms\Components\Select::make('parent_id')
                             ->options(Todo::all()->pluck('name', 'id'))->searchable(),
                         Forms\Components\TextInput::make('description'),
-                        Forms\Components\TextInput::make('done_at'),
                         Forms\Components\TextInput::make('doing_at'),
+                        Forms\Components\TextInput::make('done_at'),
+                        Forms\Components\TextInput::make('Highlighted_at'),
                     ])
                 ])
             ]);

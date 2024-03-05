@@ -28,6 +28,10 @@ class EditTodo extends EditRecord
             $data['doing_at'] = Carbon::now();
         }
 
+        if($data['highlight']){
+            $data['highlighted_at'] = Carbon::now();
+        }
+
         return $data;
     }
 }
