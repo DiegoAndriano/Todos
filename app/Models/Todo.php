@@ -25,6 +25,7 @@ class Todo extends Model
         'priority',
         'done_at',
         'doing_at',
+        'highlighted_at',
     ];
 
     protected $casts = [
