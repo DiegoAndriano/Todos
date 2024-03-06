@@ -10,7 +10,7 @@ use Flowframe\Trend\TrendValue;
 class PuntosDoneDailyChart extends ChartWidget
 {
     protected static ?int $sort = 2;
-    protected static ?string $heading = 'Todos por dia';
+    protected static ?string $heading = 'Puntos por dia (dia 0 es el 15 de febrero)';
 
     protected function getData(): array
     {
@@ -21,12 +21,12 @@ class PuntosDoneDailyChart extends ChartWidget
             end: now()->addMonths(1),
         )
         ->perDay()
-        ->count();
+        ->sum('points');
 
         return [
             'datasets' => [
             [
-                'label' => 'Todos completados por día',
+                'label' => 'Puntos por día',
                 'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                 'backgroundColor' => '#36A2EB',
                 'borderColor' => '#9BD0F5',

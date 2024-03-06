@@ -83,7 +83,7 @@ class TodoResource extends Resource
                 Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('priority')->sortable(query: function (Builder $query, string $direction): Builder {
                     return $query
-                        ->orderByRaw("FIELD(state , 'doing', 'to-do', 'done', 'cancelado') ASC")
+                        ->orderByRaw("FIELD(state , 'doing', 'to-do', 'done','backlog', 'cancelado') ASC")
                         ->orderBy('priority', $direction);
                 }),
                 SelectColumn::make('state')->options([

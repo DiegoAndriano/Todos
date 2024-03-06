@@ -10,7 +10,7 @@ use Flowframe\Trend\TrendValue;
 class PuntosDoneWeeklyChart extends ChartWidget
 {
     protected static ?int $sort = 3;
-    protected static ?string $heading = 'Todos por mes';
+    protected static ?string $heading = 'Puntos por mes';
 
     protected function getData(): array
     {
@@ -21,12 +21,12 @@ class PuntosDoneWeeklyChart extends ChartWidget
             end: now()->endOfYear(),
         )
         ->perMonth()
-        ->count();
+        ->sum('points');
 
         return [
             'datasets' => [
             [
-                'label' => 'Todos completados por mes',
+                'label' => 'Puntos por mes',
                 'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                 'backgroundColor' => '#36A2EB',
                 'borderColor' => '#9BD0F5',

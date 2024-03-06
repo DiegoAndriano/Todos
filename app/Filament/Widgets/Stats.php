@@ -29,7 +29,7 @@ class Stats extends BaseWidget
             ->sum('points')
             ->map(fn(TrendValue $value) => $value->aggregate)->toArray();
 
-        # hay que usar done_at en vez de done
+        # Esto no se corresponde con el grafico de por dia
         $masPuntosDia = DB::table('todos')->where('state', '=', 'done')->get()
             ->groupBy(function ($item) {
                 return Carbon::parse($item->done_at)->format('Y-m-d');
