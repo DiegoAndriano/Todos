@@ -28,34 +28,10 @@ class Stats extends BaseWidget
             ->sum('points')
             ->map(fn(TrendValue $value) => $value->aggregate)->toArray();
 
+        # hay que usar done_at en vez de done
         $masPuntosDia = DB::table('todos')->where('state', '=', 'done')->get()
             ->groupBy(function ($item) {
-                return Carbon::parse($item->created_at)->format('Y-m-d');
-            })->map(function ($item) {
-                return $item->sum('points');
-            })->max();
-
-        $masPuntosDiaAllaria = DB::table('todos')->where('state', '=', 'done')->where('tag_id', '1')->get()
-            ->groupBy(function ($item) {
-                return Carbon::parse($item->created_at)->format('Y-m-d');
-            })->map(function ($item) {
-                return $item->sum('points');
-            })->max();
-        $masPuntosDiaEjercicio = DB::table('todos')->where('state', '=', 'done')->where('tag_id', '3')->get()
-            ->groupBy(function ($item) {
-                return Carbon::parse($item->created_at)->format('Y-m-d');
-            })->map(function ($item) {
-                return $item->sum('points');
-            })->max();
-        $masPuntosDiaSalud = DB::table('todos')->where('state', '=', 'done')->where('tag_id', '4')->get()
-            ->groupBy(function ($item) {
-                return Carbon::parse($item->created_at)->format('Y-m-d');
-            })->map(function ($item) {
-                return $item->sum('points');
-            })->max();
-        $masPuntosDiaEmprendimiento = DB::table('todos')->where('state', '=', 'done')->where('tag_id', '2')->get()
-            ->groupBy(function ($item) {
-                return Carbon::parse($item->created_at)->format('Y-m-d');
+                return Carbon::parse($item->done_at)->format('Y-m-d');
             })->map(function ($item) {
                 return $item->sum('points');
             })->max();
@@ -69,10 +45,10 @@ class Stats extends BaseWidget
 
         $masPuntosEnUnMes = DB::table('todos')->where('state', '=', 'done')->get()
             ->groupBy(function ($item) {
-                return Carbon::parse($item->created_at)->format('Y-m');
+                return Carbon::parse($item->done_at)->format('Y-m');
             })->map(function ($item) {
                 return [
-                    'mes' => Carbon::parse($item[0]->created_at)->format('M'),
+                    'mes' => Carbon::parse($item[0]->done_at)->format('M'),
                     'numero' => $item->sum('points'),
                 ];
             })->values()->sortByDesc('numero');
@@ -85,8 +61,7 @@ class Stats extends BaseWidget
             Stat::make('Puntos total', Todo::where('state', '=', 'done')->sum('points'))
                 ->chart($puntosPorDia)
                 ->color('success'),
-            Stat::make('Más puntos en un día', $masPuntosDia)
-                ->description("Maximos relativos: All:{$masPuntosDiaAllaria}, Emp:{$masPuntosDiaEmprendimiento}, Eje:{$masPuntosDiaEjercicio}, Sal:$masPuntosDiaSalud"),
+            Stat::make('Más puntos en un día', $masPuntosDia),
             Stat::make('Promedio puntos en un día', floor($averagePuntosPorDia)),
             Stat::make("Más puntos en un mes: {$masPuntosEnUnMes->first()['mes']}", $masPuntosEnUnMes->first()['numero']),
         ];
