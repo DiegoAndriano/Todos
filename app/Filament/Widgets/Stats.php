@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class Stats extends BaseWidget
 {
+    protected static ?int $sort = 1;
     protected function getStats(): array
     {
         $donePorDia = Trend::model(Todo::class)

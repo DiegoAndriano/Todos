@@ -7,26 +7,26 @@ use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
-class PuntosDoneWeeklyChart extends ChartWidget
+class PuntosDoneDailyChart extends ChartWidget
 {
-    protected static ?int $sort = 3;
-    protected static ?string $heading = 'Todos por mes';
+    protected static ?int $sort = 2;
+    protected static ?string $heading = 'Todos por dia';
 
     protected function getData(): array
     {
         $data = Trend::model(Todo::class)
         ->dateColumn('done_at')
         ->between(
-            start: now()->startOfYear(),
-            end: now()->endOfYear(),
+            start: now()->subMonths(1),
+            end: now()->addMonths(1),
         )
-        ->perMonth()
+        ->perDay()
         ->count();
 
         return [
             'datasets' => [
             [
-                'label' => 'Todos completados por mes',
+                'label' => 'Todos completados por día',
                 'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                 'backgroundColor' => '#36A2EB',
                 'borderColor' => '#9BD0F5',
@@ -38,6 +38,7 @@ class PuntosDoneWeeklyChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'line';
     }
 }
+
