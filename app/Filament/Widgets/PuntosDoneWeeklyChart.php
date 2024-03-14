@@ -15,24 +15,24 @@ class PuntosDoneWeeklyChart extends ChartWidget
     protected function getData(): array
     {
         $data = Trend::model(Todo::class)
-        ->dateColumn('done_at')
-        ->between(
-            start: now()->startOfYear(),
-            end: now()->endOfYear(),
-        )
-        ->perMonth()
-        ->sum('points');
+            ->dateColumn('done_at')
+            ->between(
+                start: now()->startOfYear(),
+                end: now()->endOfYear(),
+            )
+            ->perMonth()
+            ->sum('points');
 
         return [
             'datasets' => [
-            [
-                'label' => 'Puntos por mes',
-                'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
-                'backgroundColor' => '#36A2EB',
-                'borderColor' => '#9BD0F5',
+                [
+                    'label' => 'Puntos por mes',
+                    'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
+                    'backgroundColor' => '#36A2EB',
+                    'borderColor' => '#9BD0F5',
+                ],
             ],
-        ],
-        'labels' => $data->map(fn (TrendValue $value) => $value->date),
+            'labels' => $data->map(fn(TrendValue $value) => $value->date),
         ];
     }
 
