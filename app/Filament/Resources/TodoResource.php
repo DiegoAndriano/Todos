@@ -42,7 +42,7 @@ class TodoResource extends Resource
                             ->live()
                             ->required(),
                         Forms\Components\Select::make('sub_tag_id')
-                            ->options(fn (Forms\Get $get): Collection => SubTag::where('tag_id', $get('tag_id'))->pluck('name', 'id'))
+                            ->options(fn(Forms\Get $get): Collection => SubTag::where('tag_id', $get('tag_id'))->pluck('name', 'id'))
                             ->required(),
                         Forms\Components\Select::make('state')->options([
                             'to-do' => 'To do',
@@ -65,7 +65,7 @@ class TodoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->recordClasses(fn (Model $record) => match ($record->state) {
+            ->recordClasses(fn(Model $record) => match ($record->state) {
                 'to-do' => 'bg-red-500/15',
                 'doing' => 'bg-yellow-500/15',
                 'done' => 'bg-green-500/15',
@@ -75,8 +75,8 @@ class TodoResource extends Resource
             ->groups([
                 Group::make('parent_id')
                     ->collapsible()
-                    ->groupQueryUsing(fn (Builder $query) => $query->groupBy('parent_id'))
-                    ->orderQueryUsing(fn ($query) => $query->orderBy("parent_id", "desc")),
+                    ->groupQueryUsing(fn(Builder $query) => $query->groupBy('parent_id'))
+                    ->orderQueryUsing(fn($query) => $query->orderBy("parent_id", "desc")),
             ])
             ->defaultGroup('parent_id')
             ->columns([
@@ -93,20 +93,19 @@ class TodoResource extends Resource
                     'cancelado' => 'Cancelado',
                     'backlog' => 'Backlog',
                 ])
-                ->beforeStateUpdated(function ($record, $state) {
-                    if($state == 'doing') {
-                        $record->update([
-                            'doing_at' => Carbon::now()
-                        ]);
-                    }
+                    ->beforeStateUpdated(function ($record, $state) {
+                        if ($state == 'doing') {
+                            $record->update([
+                                'doing_at' => Carbon::now()
+                            ]);
+                        }
 
-                    if($state == 'done') {
-                        $record->update([
-                            'done_at' => Carbon::now()
-                        ]);
-                    }
-
-                }),
+                        if ($state == 'done') {
+                            $record->update([
+                                'done_at' => Carbon::now()
+                            ]);
+                        }
+                    }),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable()->limit(25),
                 Tables\Columns\TextColumn::make('points')->sortable(),
                 Tables\Columns\IconColumn::make('highlight')->boolean(),
@@ -136,7 +135,7 @@ class TodoResource extends Resource
                     ->label('State'),
                 Tables\Filters\Filter::make('highlight')
                     ->label('Highlighted')
-                    ->query(fn (Builder $query): Builder => $query->where('highlight', true)),
+                    ->query(fn(Builder $query): Builder => $query->where('highlight', true)),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
