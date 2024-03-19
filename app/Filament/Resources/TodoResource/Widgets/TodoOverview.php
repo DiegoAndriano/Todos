@@ -31,10 +31,10 @@ class TodoOverview extends BaseWidget
             "Legen-dary",
         ];
 
-        $sum = \App\Models\Todo::overToday()->allaria()->sum('points')
-            + \App\Models\Todo::overToday()->emprendimiento()->sum('points')
-            + \App\Models\Todo::overToday()->ejercicio()->sum('points')
-            + \App\Models\Todo::overToday()->aprendizaje()->sum('points');
+        $sum = \App\Models\Todo::overToday()->owned()->allaria()->sum('points')
+            + \App\Models\Todo::overToday()->owned()->emprendimiento()->sum('points')
+            + \App\Models\Todo::overToday()->owned()->ejercicio()->sum('points')
+            + \App\Models\Todo::overToday()->owned()->aprendizaje()->sum('points');
 
 
         $estado = $estados[$sum];

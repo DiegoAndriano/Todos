@@ -22,6 +22,7 @@ class Crossfit implements IPlantilla {
             'done_at' => Carbon::createFromTime('11', '00', '00'),
             'doing_at' => Carbon::createFromTime('12', '00', '00'),
             'highlight' => false,
+            'user_id' => auth()->user()->id,
         ]);
         return ['error' => false];
     }

@@ -22,6 +22,7 @@ class Golang implements IPlantilla
             'done_at' => Carbon::now(),
             'doing_at' => Carbon::now()->subHour(),
             'highlight' => false,
+            'user_id' => auth()->user()->id,
         ]);
         return ['error' => false];
     }

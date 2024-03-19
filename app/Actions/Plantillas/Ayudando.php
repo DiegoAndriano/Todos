@@ -22,6 +22,7 @@ class Ayudando implements IPlantilla
             'done_at' => Carbon::now(),
             'doing_at' => Carbon::now()->subMinutes(30),
             'highlight' => false,
+            'user_id' => auth()->user()->id,
         ]);
         return ['error' => false];
     }

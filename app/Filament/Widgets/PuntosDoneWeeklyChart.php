@@ -14,7 +14,7 @@ class PuntosDoneWeeklyChart extends ChartWidget
 
     protected function getData(): array
     {
-        $data = Trend::model(Todo::class)
+        $data = Trend::query(Todo::owned())
             ->dateColumn('done_at')
             ->between(
                 start: now()->startOfYear(),

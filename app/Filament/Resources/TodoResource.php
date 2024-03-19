@@ -7,8 +7,10 @@ use App\Filament\Resources\TodoResource\Widgets\TodoOverview;
 use App\Models\SubTag;
 use App\Models\Tag;
 use App\Models\Todo;
+use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -33,6 +35,7 @@ class TodoResource extends Resource
                 Forms\Components\Grid::make(3)->schema([
                     Forms\Components\Section::make()->columns(2)->columnSpan(2)->schema([
                         Forms\Components\TextInput::make('id')->dehydrated(false)->disabled(),
+                        Forms\Components\TextInput::make('user_id')->dehydrated(false)->disabled()->default(auth()->user()->id),
                         Forms\Components\TextInput::make('name')->required(),
                         Forms\Components\TextInput::make('points')->required(),
                         Forms\Components\TextInput::make('priority')->required(),
@@ -53,6 +56,11 @@ class TodoResource extends Resource
                         ]),
                         Forms\Components\Select::make('parent_id')
                             ->options(Todo::all()->pluck('name', 'id'))->searchable(),
+                        Select::make('shared_with')
+                            ->multiple()
+                            ->searchable()
+                            ->getSearchResultsUsing(fn (string $search): array => User::where('name', 'like', "%{$search}%")->limit(50)->pluck('name', 'id')->toArray())
+                            ->getOptionLabelsUsing(fn (array $values): array => User::whereIn('id', $values)->pluck('name', 'id')->toArray()),
                         Forms\Components\TextInput::make('description'),
                         Forms\Components\TextInput::make('doing_at'),
                         Forms\Components\TextInput::make('done_at'),
@@ -80,7 +88,7 @@ class TodoResource extends Resource
             ])
             ->defaultGroup('parent_id')
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
+                Tables\Columns\TextColumn::make('id')->sortable(),
                 Tables\Columns\TextColumn::make('priority')->sortable(query: function (Builder $query, string $direction): Builder {
                     return $query
                         ->orderByRaw("FIELD(state , 'doing', 'to-do', 'done','backlog', 'cancelado') ASC")
@@ -168,5 +176,10 @@ class TodoResource extends Resource
         return [
             TodoOverview::class
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->ownedOrShared();
     }
 }

@@ -15,14 +15,14 @@ class Stats extends BaseWidget
     protected static ?int $sort = 1;
     protected function getStats(): array
     {
-        $donePorDia = Trend::model(Todo::class)
+        $donePorDia = Trend::query(Todo::owned())
             ->dateColumn('done_at')
             ->between(start: now()->startOfYear(), end: now()->endOfYear())
             ->perMonth()
             ->count()
             ->map(fn(TrendValue $value) => $value->aggregate)->toArray();
 
-        $puntosPorDia = Trend::model(Todo::class)
+        $puntosPorDia = Trend::query(Todo::owned())
             ->dateColumn('done_at')
             ->between(start: now()->startOfYear(), end: now()->endOfYear())
             ->perMonth()
@@ -30,21 +30,21 @@ class Stats extends BaseWidget
             ->map(fn(TrendValue $value) => $value->aggregate)->toArray();
 
         # Esto no se corresponde con el grafico de por dia
-        $masPuntosDia = DB::table('todos')->where('state', '=', 'done')->get()
+        $masPuntosDia = DB::table('todos')->where('state', '=', 'done')->owned()->get()
             ->groupBy(function ($item) {
                 return Carbon::parse($item->done_at)->format('Y-m-d');
             })->map(function ($item) {
                 return $item->sum('points');
             })->max();
 
-        $averagePuntosPorDia = DB::table('todos')->where('state', '=', 'done')->get()
+        $averagePuntosPorDia = DB::table('todos')->where('state', '=', 'done')->owned()->get()
             ->groupBy(function ($item) {
                 return Carbon::parse($item->created_at)->format('Y-m-d');
             })->map(function ($item) {
                 return $item->sum('points');
             })->average();
 
-        $masPuntosEnUnMes = DB::table('todos')->where('state', '=', 'done')->get()
+        $masPuntosEnUnMes = DB::table('todos')->where('state', '=', 'done')->owned()->get()
             ->groupBy(function ($item) {
                 return Carbon::parse($item->done_at)->format('Y-m');
             })->map(function ($item) {
@@ -55,11 +55,11 @@ class Stats extends BaseWidget
             })->values()->sortByDesc('numero');
 
         return [
-            Stat::make('To do', Todo::where('state', 'to-do')->count()),
-            Stat::make('Done total', Todo::where('done_at', '!=', null)->count())
+            Stat::make('To do', Todo::where('state', 'to-do')->owned()->count()),
+            Stat::make('Done total', Todo::where('done_at', '!=', null)->owned()->count())
                 ->chart($donePorDia)
                 ->color('success'),
-            Stat::make('Puntos total', Todo::where('state', '=', 'done')->sum('points'))
+            Stat::make('Puntos total', Todo::where('state', '=', 'done')->owned()->sum('points'))
                 ->chart($puntosPorDia)
                 ->color('success'),
             Stat::make('Más puntos en un día', $masPuntosDia),

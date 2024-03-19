@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Todo extends Model
 {
@@ -26,11 +27,14 @@ class Todo extends Model
         'done_at',
         'doing_at',
         'highlighted_at',
+        'shared_with',
+        'user_id',
     ];
 
     protected $casts = [
         'done_at' => 'datetime:Y-m-d H:i:s',
         'doing_at' => 'datetime:Y-m-d H:i:s',
+        'shared_with' => 'array',
     ];
 
     public function tag(): BelongsTo
@@ -46,6 +50,11 @@ class Todo extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Todo::class);
+    }
+
+    public function proprietary(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'todo_user', 'todo_id', 'user_id');
     }
 
     public function scopeOverToday(Builder $query)
@@ -100,6 +109,21 @@ class Todo extends Model
     {
         $tagAprendiaje = Tag::where('name', 'Aprendizaje')->first()->id;
         $query->where('tag_id', $tagAprendiaje);
+    }
 
+    public function scopeOwnedOrShared(Builder $query)
+    {
+        $query->where('user_id', auth()->user()->id)
+            ->orWhere('shared_with', 'LIKE', "%". auth()->user()->id . "%");
+    }
+
+    public function scopeOwned(Builder $query)
+    {
+        $query->where('user_id', auth()->user()->id);
+    }
+
+    public function scopeShared(Builder $query)
+    {
+        $query->where('shared_with', 'LIKE', "%\"". auth()->user()->id . "\"%");
     }
 }

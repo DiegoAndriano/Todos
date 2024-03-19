@@ -22,6 +22,7 @@ class Duolingo implements IPlantilla
             'done_at' => Carbon::now(),
             'doing_at' => Carbon::now()->subMinutes(15),
             'highlight' => false,
+            'user_id' => auth()->user()->id,
         ]);
         return ['error' => false];
     }
