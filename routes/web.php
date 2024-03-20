@@ -16,5 +16,5 @@ use Illuminate\Support\Facades\Route;
 
 //Route::get('/', [TodoController::class, 'index']);
 //Route::post('/todo', [TodoController::class, 'store'])->name('create.todos');
-//Route::get('/todo/plantilla/{plantilla}', [TodoController::class, 'store'])->name('create.plantilla.todos');
-//Route::patch('/todo/{todo}', [TodoController::class, 'update'])->name('update.todos');
+Route::get('/todo/plantilla/{plantilla}', [TodoController::class, 'store'])->name('create.plantilla.todos');
+Route::patch('/todo/{todo}', [TodoController::class, 'update'])->name('update.todos');
