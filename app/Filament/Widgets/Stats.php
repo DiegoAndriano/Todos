@@ -30,21 +30,21 @@ class Stats extends BaseWidget
             ->map(fn(TrendValue $value) => $value->aggregate)->toArray();
 
         # Esto no se corresponde con el grafico de por dia
-        $masPuntosDia = DB::table('todos')->where('state', '=', 'done')->owned()->get()
+        $masPuntosDia = DB::table('todos')->where('state', '=', 'done')->where('user_id', auth()->user()->id)->get()
             ->groupBy(function ($item) {
                 return Carbon::parse($item->done_at)->format('Y-m-d');
             })->map(function ($item) {
                 return $item->sum('points');
             })->max();
 
-        $averagePuntosPorDia = DB::table('todos')->where('state', '=', 'done')->owned()->get()
+        $averagePuntosPorDia = DB::table('todos')->where('state', '=', 'done')->where('user_id', auth()->user()->id)->get()
             ->groupBy(function ($item) {
                 return Carbon::parse($item->created_at)->format('Y-m-d');
             })->map(function ($item) {
                 return $item->sum('points');
             })->average();
 
-        $masPuntosEnUnMes = DB::table('todos')->where('state', '=', 'done')->owned()->get()
+        $masPuntosEnUnMes = DB::table('todos')->where('state', '=', 'done')->where('user_id', auth()->user()->id)->get()
             ->groupBy(function ($item) {
                 return Carbon::parse($item->done_at)->format('Y-m');
             })->map(function ($item) {

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\TodoResource\Widgets;
 
+use App\Models\Tag;
+use App\Models\Todo;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -39,12 +41,12 @@ class TodoOverview extends BaseWidget
 
         $estado = $estados[$sum];
 
-        return [
-            Stat::make('Dia', $estado),
-            Stat::make('Allaria (objetivo: 4)', \App\Models\Todo::overToday()->allaria()->sum('points')),
-            Stat::make('Emprendimiento (objetivo: 1)', \App\Models\Todo::overToday()->emprendimiento()->sum('points')),
-            Stat::make('Ejercicio (objetivo: 1)', \App\Models\Todo::overToday()->ejercicio()->sum('points')),
-            Stat::make('Aprendizaje (objetivo: 3)', \App\Models\Todo::overToday()->aprendizaje()->sum('points')),
-        ];
+        $widgets = [];
+        $widgets[] = Stat::make('Dia', $estado);
+        foreach(Tag::where('user_id', auth()->user()->id)->where('is_widget', true)->get() as $tag) {
+            $widgets[] = Stat::make($tag->name . ' - aim: ' . $tag->aim, Todo::overToday()->where('tag_id', $tag->id)->sum('points'));
+        }
+
+        return $widgets;
     }
 }
