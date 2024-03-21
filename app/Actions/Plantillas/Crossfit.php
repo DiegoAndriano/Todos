@@ -16,7 +16,7 @@ class Crossfit implements IPlantilla {
             'description' => "",
             'points' => 2,
             'priority' => 1,
-            'tag_id' => Tag::where('name', 'Ejercicio')->first()->id,
+            'tag_id' => Tag::where('name', 'Entrenamiento')->first()->id,
             'sub_tag_id' => SubTag::where('name', 'Crossfit')->first()->id,
             'state' => 'done',
             'done_at' => Carbon::createFromTime('11', '00', '00'),
