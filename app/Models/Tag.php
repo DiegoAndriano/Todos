@@ -11,7 +11,13 @@ class Tag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'objetivo', 'is_widget', 'aim', 'user_id'];
+    protected $fillable = [
+        'name',
+        'objetivo',
+        'is_widget',
+        'aim',
+        'user_id'
+    ];
 
     public function todo(): HasMany
     {
@@ -21,6 +27,6 @@ class Tag extends Model
     public function scopeOwned(Builder $query)
     {
         $query->where('user_id', auth()->user()->id);
-   }
+    }
 
 }
