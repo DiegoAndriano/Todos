@@ -87,30 +87,6 @@ class Todo extends Model
         $query->where('created_at', '>', Carbon::today());
     }
 
-    public function scopeAllaria(Builder $query)
-    {
-        $tagAllaria = Tag::where('name', 'Allaria')->first()->id;
-        $query->where('tag_id', $tagAllaria);
-    }
-
-    public function scopeEmprendimiento(Builder $query)
-    {
-        $tagEmprendimiento = Tag::where('name', 'Emprendimiento')->first()->id;
-        $query->where('tag_id', $tagEmprendimiento);
-    }
-
-    public function scopeEjercicio(Builder $query)
-    {
-        $tagEjercicio = Tag::where('name', 'Ejercicio')->first()->id;
-        $query->where('tag_id', $tagEjercicio);
-    }
-
-    public function scopeAprendizaje(Builder $query)
-    {
-        $tagAprendiaje = Tag::where('name', 'Aprendizaje')->first()->id;
-        $query->where('tag_id', $tagAprendiaje);
-    }
-
     public function scopeOwnedOrShared(Builder $query)
     {
         $query->where('user_id', auth()->user()->id)
