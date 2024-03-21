@@ -41,11 +41,11 @@ class TodoResource extends Resource
                         Forms\Components\TextInput::make('priority')->required(),
                         Forms\Components\Checkbox::make('highlight'),
                         Forms\Components\Select::make('tag_id')
-                            ->options(Tag::all()->pluck('name', 'id'))
+                            ->options(Tag::owned()->get()->pluck('name', 'id'))
                             ->live()
                             ->required(),
                         Forms\Components\Select::make('sub_tag_id')
-                            ->options(fn(Forms\Get $get): Collection => SubTag::where('tag_id', $get('tag_id'))->pluck('name', 'id'))
+                            ->options(fn(Forms\Get $get): Collection => SubTag::owned()->where('tag_id', $get('tag_id'))->pluck('name', 'id'))
                             ->required(),
                         Forms\Components\Select::make('state')->options([
                             'to-do' => 'To do',
@@ -55,7 +55,7 @@ class TodoResource extends Resource
                             'backlog' => 'Backlog',
                         ]),
                         Forms\Components\Select::make('parent_id')
-                            ->options(Todo::all()->pluck('name', 'id'))->searchable(),
+                            ->options(Todo::owned()->get()->pluck('name', 'id'))->searchable(),
                         Select::make('shared_with')
                             ->multiple()
                             ->searchable()
@@ -124,12 +124,12 @@ class TodoResource extends Resource
             ])->defaultSort('priority')
             ->filters([
                 Tables\Filters\SelectFilter::make('tag')
-                    ->options(Tag::get()->pluck('name', 'id'))
+                    ->options(Tag::owned()->get()->pluck('name', 'id'))
                     ->label('Tag')
                     ->attribute('tag_id'),
                 Tables\Filters\SelectFilter::make('subtag')
                     ->label('Subtag')
-                    ->options(SubTag::get()->pluck('name', 'id'))
+                    ->options(SubTag::owned()->get()->pluck('name', 'id'))
                     ->attribute('sub_tag_id'),
                 Tables\Filters\SelectFilter::make('state')
                     ->multiple()

@@ -31,7 +31,7 @@ class SubTagResource extends Resource
                         Forms\Components\TextInput::make('id')->dehydrated(false)->disabled(),
                         Forms\Components\TextInput::make('name'),
                         Forms\Components\Select::make('tag_id')
-                            ->options(Tag::all()->pluck('name', 'id'))
+                            ->options(Tag::owned()->get()->pluck('name', 'id'))
                             ->required(),
                     ])
                 ])
