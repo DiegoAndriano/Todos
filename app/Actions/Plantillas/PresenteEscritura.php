@@ -7,7 +7,7 @@ use App\Models\Tag;
 use App\Models\Todo;
 use Carbon\Carbon;
 
-class Leetcode implements IPlantilla
+class PresenteEscritura implements IPlantilla
 {
     public function execute(): array
     {
