@@ -11,7 +11,6 @@ class TodoOverview extends BaseWidget
 {
     protected function getStats(): array
     {
-
         $estados = [
             '|---------|',
             '|x--------|',
