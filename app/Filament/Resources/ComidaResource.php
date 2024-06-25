@@ -6,6 +6,7 @@ use App\Filament\Resources\ComidaResource\Pages;
 use App\Filament\Resources\ComidaResource\RelationManagers;
 use App\Models\Comida;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -24,7 +25,13 @@ class ComidaResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('comida'),
-                Forms\Components\TextInput::make('precio')->numeric(),
+                Forms\Components\TextInput::make('precio')->afterStateHydrated(
+                    function ($record, TextInput $component,$state) {
+                        if($record != null){
+                            $component->state($record->precio()->first() ? $record->precio()->first()->precio : 0);
+                        }
+                    }
+                ),
             ]);
     }
 
@@ -33,7 +40,7 @@ class ComidaResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('comida')->sortable()->searchable()->limit(25),
-                Tables\Columns\TextColumn::make('precio')->sortable()->searchable()->limit(25)->prefix('$'),
+                Tables\Columns\TextColumn::make('precio.precio')->sortable()->searchable()->limit(25)->prefix('$'),
             ])
             ->filters([
                 //

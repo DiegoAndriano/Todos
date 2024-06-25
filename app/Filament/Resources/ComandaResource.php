@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ComandaResource\Pages;
 use App\Filament\Resources\ComandaResource\RelationManagers;
+use App\Filament\Resources\ComandaResource\Widgets\ComandaOverview;
 use App\Models\Comanda;
 use App\Models\Comida;
 use App\Models\Tag;
@@ -38,7 +39,7 @@ class ComandaResource extends Resource
                     ->searchable()
                     ->options(Comida::get()->pluck('comida', 'id'))
                     ->getSearchResultsUsing((fn(string $search): array => Comida::where('comida', 'like', "%{$search}%")->limit(50)->pluck('comida', 'id')->toArray()))
-                    ->getOptionLabelsUsing(fn(array $values): array => Comida::whereIn('id', $values)->pluck('name', 'id')->toArray()),
+                    ->getOptionLabelsUsing(fn(array $values): array => Comida::whereIn('id', $values)->pluck('comida', 'id')->toArray()),
             ]);
     }
 
@@ -48,7 +49,7 @@ class ComandaResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('mesa')->sortable()->searchable()->limit(25),
                 Tables\Columns\TextColumn::make('a_cobrar')
-                    ->default(fn($record) => $record->comidas()->get()->sum('precio'))
+                    ->default(fn($record) => $record->comidas()->get()->sum('precio.precio'))
                     ->prefix('$')
                     ->visibleFrom('md'),
                 SelectColumn::make('estado')->options([
@@ -90,6 +91,14 @@ class ComandaResource extends Resource
             'index' => Pages\ListComandas::route('/'),
             'create' => Pages\CreateComanda::route('/create'),
             'edit' => Pages\EditComanda::route('/{record}/edit'),
+        ];
+    }
+
+
+    public static function getWidgets(): array
+    {
+        return [
+            ComandaOverview::class
         ];
     }
 }
