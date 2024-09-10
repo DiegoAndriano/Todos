@@ -12,6 +12,11 @@ class PuntosDoneWeeklyChart extends ChartWidget
     protected static ?int $sort = 3;
     protected static ?string $heading = 'Puntos por mes';
 
+    public static function canView(): bool
+    {
+        return !str_ends_with(auth()->user()->email, '@email.com');
+    }
+
     protected function getData(): array
     {
         $data = Trend::query(Todo::owned())

@@ -12,6 +12,11 @@ class PuntosDoneDailyChart extends ChartWidget
     protected static ?int $sort = 2;
     protected static ?string $heading = 'Puntos por dia (dia 0 es el 15 de febrero)';
 
+    public static function canView(): bool
+    {
+        return !str_ends_with(auth()->user()->email, '@email.com');
+    }
+
     protected function getData(): array
     {
         $data = Trend::query(Todo::owned())

@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\DB;
 class Stats extends BaseWidget
 {
     protected static ?int $sort = 1;
+
+    public static function canView(): bool
+    {
+        return !str_ends_with(auth()->user()->email, '@email.com');
+    }
+
     protected function getStats(): array
     {
         $donePorDia = Trend::query(Todo::owned())
