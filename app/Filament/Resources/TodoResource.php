@@ -28,6 +28,11 @@ class TodoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function canAccess(): bool
+    {
+        return !str_ends_with(auth()->user()->email, '@email.com');
+    }
+
     public static function form(Form $form): Form
     {
         return $form

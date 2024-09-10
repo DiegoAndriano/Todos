@@ -22,6 +22,11 @@ class SubTagResource extends Resource
 
     protected static ?string $navigationGroup = 'System';
 
+    public static function canAccess(): bool
+    {
+        return !str_ends_with(auth()->user()->email, '@email.com');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
