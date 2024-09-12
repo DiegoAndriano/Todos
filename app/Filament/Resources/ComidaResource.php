@@ -25,22 +25,17 @@ class ComidaResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('comida'),
-                Forms\Components\TextInput::make('precio')->afterStateHydrated(
-                    function ($record, TextInput $component,$state) {
-                        if($record != null){
-                            $component->state($record->precio()->first() ? $record->precio()->first()->precio : 0);
-                        }
-                    }
-                ),
+                Forms\Components\TextInput::make('precio')
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn(Builder $query) => $query->where('visible','=', true))
             ->columns([
                 Tables\Columns\TextColumn::make('comida')->sortable()->searchable()->limit(25),
-                Tables\Columns\TextColumn::make('precio.precio')->sortable()->searchable()->limit(25)->prefix('$'),
+                Tables\Columns\TextColumn::make('precio')->sortable()->searchable()->limit(25)->prefix('$'),
             ])
             ->filters([
                 //

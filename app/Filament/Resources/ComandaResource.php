@@ -32,14 +32,26 @@ class ComandaResource extends Resource
                     'abierto' => 'Abierto',
                     'cerrado' => 'Cerrado',
                     'cancelado' => 'Cancelado',
-                ])->default('abierto'),
+                ])
+                    ->live()
+                    ->default('abierto'),
                 Forms\Components\Select::make('comida_id')
                     ->relationship('comidas')
+                    ->hidden(fn(Forms\Get $get, $record): bool => $get('estado') == 'Abierto')
                     ->multiple()
                     ->searchable()
-                    ->options(Comida::get()->pluck('comida', 'id'))
-                    ->getSearchResultsUsing((fn(string $search): array => Comida::where('comida', 'like', "%{$search}%")->limit(50)->pluck('comida', 'id')->toArray()))
-                    ->getOptionLabelsUsing(fn(array $values): array => Comida::whereIn('id', $values)->pluck('comida', 'id')->toArray()),
+                    ->options(Comida::where('visible', true)->get()->pluck('comida', 'id')->toArray())
+                    ->getSearchResultsUsing((fn(string $search): array => Comida::where('visible', true)->where('comida', 'like', "%{$search}%")->limit(50)->pluck('comida', 'id')->toArray()))
+                    ->getOptionLabelsUsing(fn(array $values): array => Comida::where('visible', true)->whereIn('id', $values)->pluck('comida', 'id')->toArray()),
+                Forms\Components\Select::make('comida_id')
+                    ->relationship('comidas')
+                    ->label('Comidas de esta orden')
+                    ->disabled()
+                    ->multiple()
+                    ->searchable()
+                    ->options(fn($record): array => $record->comidas()->get()->pluck('comida', 'id')->toArray())
+                    ->getSearchResultsUsing((fn(string $search, $record): array =>  $record->comidas()->where('comida', 'like', "%{$search}%")->limit(50)->pluck('comida', 'id')->toArray()))
+                    ->getOptionLabelsUsing(fn(array $values, $record): array => $record->comidas()->whereIn('id', $values)->pluck('comida', 'id')->toArray()),
             ]);
     }
 
@@ -49,7 +61,7 @@ class ComandaResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('mesa')->sortable()->searchable()->limit(25),
                 Tables\Columns\TextColumn::make('a_cobrar')
-                    ->default(fn($record) => $record->comidas()->get()->sum('precio.precio'))
+                    ->default(fn($record) => $record->comidas()->get()->sum('precio'))
                     ->prefix('$')
                     ->visibleFrom('md'),
                 SelectColumn::make('estado')->options([

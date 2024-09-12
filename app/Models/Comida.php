@@ -13,7 +13,9 @@ class Comida extends Model
 
     protected $fillable = [
         'comida',
-        'precio_id'
+        'precio_id',
+        'precio',
+        'visible'
     ];
 
     public function comandas(): BelongsToMany

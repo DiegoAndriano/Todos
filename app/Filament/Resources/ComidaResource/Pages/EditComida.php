@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ComidaResource\Pages;
 
 use App\Filament\Resources\ComidaResource;
+use App\Models\Comida;
 use App\Models\Precio;
 use Carbon\Carbon;
 use Filament\Actions;
@@ -22,27 +23,19 @@ class EditComida extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        if ($record->precio()->first() !== null) {
+        if ($record->precio !== null) {
             if ($data['precio'] !== null) {
-                if ($data['precio'] != $record->precio()->first()->precio) {
-                    $record->precio()->first()->update(['updated_at' => Carbon::now()]);
-                    $p = Precio::create(['precio' => $data['precio'], 'comida_id' => $record->id]);
-                    $record->update(['precio_id' => $p->id, 'comida' => $data['comida']]);
-                } else {
-                    $record->update(['comida' => $data['comida']]);
-                }
+                Comida::create([
+                    'comida' => $data['comida'] ?? $record->comida,
+                    'precio' => $data['precio']
+                ]);
+
+                $record->update(['visible' => false]);
             } else {
                 $record->update(['comida' => $data['comida']]);
             }
         } else {
-            if ($data['precio'] !== null) {
-                $p = Precio::create(['precio' => $data['precio'], 'comida_id' => $record->id]);
-                $record->update(['precio_id' => $p->id, 'comida' => $data['comida']]);
-                $record->update(['comida' => $data['comida']]);
-
-            } else {
-                $record->update(['comida' => $data['comida']]);
-            }
+            $record->update(['precio' => $data['precio']]);
         }
 
 
