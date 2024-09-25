@@ -47,9 +47,10 @@ class ComandaResource extends Resource
                     ->relationship('comidas')
                     ->label('Comidas de esta orden')
                     ->disabled()
+                    ->hidden(fn($record): bool => $record == null)
                     ->multiple()
                     ->searchable()
-                    ->options(fn($record): array => $record->comidas()->get()->pluck('comida', 'id')->toArray())
+                    ->options(fn($record): array => $record ? $record->comidas()->get()->pluck('comida', 'id')->toArray() : [])
                     ->getSearchResultsUsing((fn(string $search, $record): array =>  $record->comidas()->where('comida', 'like', "%{$search}%")->limit(50)->pluck('comida', 'id')->toArray()))
                     ->getOptionLabelsUsing(fn(array $values, $record): array => $record->comidas()->whereIn('id', $values)->pluck('comida', 'id')->toArray()),
             ]);
